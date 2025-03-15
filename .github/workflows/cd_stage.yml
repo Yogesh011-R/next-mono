@@ -17,7 +17,7 @@ jobs:
           ssh-keyscan -H stage.mono.yogeshkumar.me >> ~/.ssh/known_hosts
       - name: Diagnose pnpm location
         run: |
-          ssh -i ~/.ssh/id_rsa root@stage.mono.yogeshkumar.me "which pnpm || echo 'pnpm not found' && \
+          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "which pnpm || echo 'pnpm not found' && \
           ls -la /usr/local/bin/pnpm || echo 'Not in /usr/local/bin' && \
           ls -la \$HOME/.local/share/pnpm || echo 'Not in ~/.local/share/pnpm'"
       - name: Deploy to server

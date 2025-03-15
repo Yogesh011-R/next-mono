@@ -19,10 +19,9 @@ jobs:
           username: yogesh
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            service myservice stop
             cd next-mono/
-            npm -v
-            service myservice start
+            ls
+            pws
 
       # - name: Setup SSH key
       #   run: |

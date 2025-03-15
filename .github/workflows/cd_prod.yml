@@ -5,8 +5,8 @@ on:
       - production
 
 jobs:
-  redeploy:
-    name: Redeploy to Stage
+  deploy:
+    name: Deploy to Prod
     runs-on: ubuntu-latest
     steps:
       - name: Setup SSH key

@@ -18,7 +18,7 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -i ~/.ssh/id_rsa root@stage.mono.yogeshkumar.me "cd next-mono/ && \
+          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "cd next-mono/ && \
           git pull && \
           pnpm install && \
           pnpm build && \

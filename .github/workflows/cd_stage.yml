@@ -1,41 +1,69 @@
-name: Deploy to Stage
+name: Deploy Web App with pnpm and PM2
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  redeploy:
-    name: Redeploy to Stage
+  deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - run: npm ci
-      - run: npm run build
-      - run: npm run test
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
 
-      - name: SSH and deploy node app
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: '9.1.1'
+          run_install: false
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build application
+        run: pnpm build
+
+      - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           host: stage.mono.yogeshkumar.me
           username: yogesh
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd next-mono/
-            ls
-            node -v
+            # Navigate to project directory
+            cd next-mono
 
-      # - name: Setup SSH key
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-      #     ssh-keyscan -H stage.mono.yogeshkumar.me >> ~/.ssh/known_hosts
-      # - name: Deploy to server
-      #   run: |
-      #     ssh  -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me -t "cd next-mono/ && git pull origin main && export PATH=/root/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart fe-sever && pm2 restart http-sever && pm2 restart ws-sever"
+            # Pull latest changes
+            git pull
+
+            # Install dependencies
+            pnpm install --prod
+
+            # Install PM2 globally if not installed
+            npm list -g pm2 || npm install -g pm2
+
+            # Start or restart application with PM2
+            pm2 restart ecosystem.config.js || pm2 start ecosystem.config.js

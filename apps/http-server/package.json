@@ -11,13 +11,12 @@
     "dev": "tsx watch src/index.ts"
   },
   "devDependencies": {
+    "@repo/db": "workspace:*",
     "@repo/typescript-config": "workspace:*"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@repo/db": "workspace:*",
-    "@prisma/client": "6.5.0",
     "@types/express": "^5.0.0",
     "express": "^4.21.2",
     "tsx": "^4.19.3"

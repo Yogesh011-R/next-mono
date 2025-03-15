@@ -18,4 +18,4 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "export PATH=\$HOME/.local/share/pnpm:\$PATH && cd next-mono/ && git pull --no-tags --force && pnpm install --frozen-lockfile && pnpm build && pm2 restart all"
+          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "source ~/.bashrc && cd next-mono/ && git pull --no-tags --force && pnpm install --frozen-lockfile && pnpm build && pm2 restart all"

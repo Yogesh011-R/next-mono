@@ -3,7 +3,8 @@ import { PrismaClient } from "@prisma/client";
 // Declare the global variable type
 declare global {
   var prisma: PrismaClient | undefined;
-  var process: NodeJS.Process;
+  // @ts-ignore
+  var process: any;
   var global: typeof globalThis;
 }
 

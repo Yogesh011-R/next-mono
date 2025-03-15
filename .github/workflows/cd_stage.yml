@@ -21,7 +21,7 @@ jobs:
           script: |
             cd next-mono/
             ls
-            pws
+            node -v
 
       # - name: Setup SSH key
       #   run: |

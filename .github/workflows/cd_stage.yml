@@ -9,12 +9,27 @@ jobs:
     name: Redeploy to Stage
     runs-on: ubuntu-latest
     steps:
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H stage.mono.yogeshkumar.me >> ~/.ssh/known_hosts
-      - name: Deploy to server
-        run: |
-          ssh  -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me -t "cd next-mono/ && git pull origin main && export PATH=/root/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart fe-sever && pm2 restart http-sever && pm2 restart ws-sever"
+      - name: Node Js
+        uses: actions/setup-node@v1
+
+      - name: SSH and deploy node app
+        uses: appleboy/ssh-action@master
+        with:
+          host: stage.mono.yogeshkumar.me
+          username: yogesh
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            service myservice stop
+            cd next-mono/
+            npm -v
+            service myservice start
+
+      # - name: Setup SSH key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan -H stage.mono.yogeshkumar.me >> ~/.ssh/known_hosts
+      # - name: Deploy to server
+      #   run: |
+      #     ssh  -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me -t "cd next-mono/ && git pull origin main && export PATH=/root/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart fe-sever && pm2 restart http-sever && pm2 restart ws-sever"

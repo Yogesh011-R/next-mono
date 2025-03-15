@@ -9,11 +9,17 @@ jobs:
     name: Redeploy to Stage
     runs-on: ubuntu-latest
     steps:
-      - name: SSH into the server and deploy
+      - name: Setup SSH key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
-          ssh -i ~/ssh_key root@stage.mono.yogeshkumar.me
-          cd next-mono/ && git pull
-          pnpm install
-          pnpm build
-          pm2 restart all
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H stage.mono.yogeshkumar.me >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          ssh -i ~/.ssh/id_rsa root@stage.mono.yogeshkumar.me "cd next-mono/ && \
+          git pull && \
+          pnpm install && \
+          pnpm build && \
+          pm2 restart all"

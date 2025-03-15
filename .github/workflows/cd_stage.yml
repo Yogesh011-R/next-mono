@@ -18,4 +18,9 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me -t "cd next-mono/ && git pull origin main && pnpm install && pnpm build && pm2 restart all"
+          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "cd next-mono/ && \
+          npm -v && \
+          git pull && \
+          pnpm install && \
+          pnpm build && \
+          pm2 restart all"

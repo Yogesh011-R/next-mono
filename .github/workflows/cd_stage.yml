@@ -15,11 +15,11 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H stage.mono.yogeshkumar.me >> ~/.ssh/known_hosts
-      - name: Diagnose pnpm location
-        run: |
-          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "which pnpm || echo 'pnpm not found' && \
-          ls -la /usr/local/bin/pnpm || echo 'Not in /usr/local/bin' && \
-          ls -la \$HOME/.local/share/pnpm || echo 'Not in ~/.local/share/pnpm'"
+
       - name: Deploy to server
         run: |
-          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "pwd && ls -la && cd next-mono/ && pwd && ls -la && git pull --no-tags --force && pnpm install --frozen-lockfile && pnpm build && pm2 restart all"
+          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "cd next-mono/ && \
+          git pull && \
+          ~/.local/share/pnpm/pnpm install && \
+          ~/.local/share/pnpm/pnpm build && \
+          pm2 restart all"

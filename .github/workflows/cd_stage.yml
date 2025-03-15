@@ -17,4 +17,4 @@ jobs:
           ssh-keyscan -H stage.mono.yogeshkumar.me >> ~/.ssh/known_hosts
       - name: Deploy to server
         run: |
-          ssh  -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me -t "cd next-mono/ && git pull origin main && export PATH=/root/.nvm/versions/node/v22.13.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart fe-sever && pm2 restart http-sever && pm2 restart ws-sever"
+          ssh  -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me -t "cd next-mono/ && git pull origin main && export PATH=/root/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart fe-sever && pm2 restart http-sever && pm2 restart ws-sever"

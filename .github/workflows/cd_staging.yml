@@ -1,0 +1,26 @@
+name: Deploy to Stage
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  redeploy:
+    name: Redeploy to Stage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H stage.mono.yogeshkumar.me >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        run: |
+          ssh -i ~/.ssh/id_rsa yogesh@stage.mono.yogeshkumar.me "cd next-mono/ && \
+          export PATH=/home/yogesh/.nvm/versions/node/v22.14.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/yogesh/.local/share/pnpm && \
+          git pull && \
+          ~/.local/share/pnpm/pnpm install && \
+          ~/.local/share/pnpm/pnpm build && \
+          pm2 restart all"

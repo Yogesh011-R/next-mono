@@ -60,7 +60,7 @@ jobs:
             git pull
 
             # Install dependencies
-            pnpm install --prod
+            pnpm install
 
             # Install PM2 globally if not installed
             npm list -g pm2 || npm install -g pm2
